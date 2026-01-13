@@ -1,7 +1,7 @@
 # Data Import Assignment
 
 ## Goal
-Convert three exported client spreadsheets (constituents + emails + donation history) into two CueBox-ready CSV outputs for client sign-off and import.
+Convert three exported client spreadsheets (constituents + emails + donation history) into two CSV outputs for client sign-off and import.
 
 ## Repository structure
 - `main.py`: reads input files and prints schema information (row counts + columns)
