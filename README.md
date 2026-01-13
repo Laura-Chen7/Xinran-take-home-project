@@ -112,43 +112,51 @@ I performed a combination of automated and manual QA:
 During QA I found a few input inconsistencies that required explicit handling decisions.
 
 #### 1) Orphan Patron IDs appearing only in `donations.csv` (e.g., Patron ID = 1234)
-**Finding**
+**Finding:**
 
 Some Patron IDs exist in `donations.csv` but do not appear in `constituents.csv` or `emails.csv`.
 
-**Risk**
+**Risk:**
+
 If the output is built strictly from `constituents.csv`, these donors would be dropped entirely and their lifetime / recent donation metrics would be lost.
 
-**Resolution**
+**Resolution:**
+
 I expanded the “ID universe” to include the union of Patron IDs across all three inputs (`constituents`, `emails`, `donations`).
 - For IDs missing from `constituents.csv`, the output row is still created so donation metrics are preserved.
 - Fields that rely on missing constituent data (name/company/title/tags/background) remain empty or use the same conservative placeholder rules required by CueBox.
 
-**Impact**
+**Impact:**
+
 Donation totals are preserved for all Patron IDs present in donation history, even if the donor record is missing in the other input files.
 
 ---
 
 #### 2) Duplicate Patron IDs in `constituents.csv` with conflicting attributes (e.g., Patron ID = 1288)
-**Finding**
+**Finding:**
+
 Some Patron IDs appear multiple times in `constituents.csv`. In certain cases core attributes conflict (e.g., different first/last names for the same Patron ID).
 
-**Risk**
+**Risk:**
+
 The company expects one constituent record per Constituent ID. If duplicates are not resolved, the output may contain multiple rows for the same ID, leading to ambiguous imports and mismatched joins.
 
-**Resolution**
+**Resolution:**
+
 I deduplicate `constituents.csv` to enforce one row per Patron ID using a deterministic rule:
 - Keep the row with the most recent `Date Entered` (ties resolved deterministically, e.g., stable file order).
 
-**Impact**
+**Impact:**
+
 Each `CB Constituent ID` appears once in the output. When duplicates exist, older/conflicting values may be dropped in favor of the most recent record. But in real work, I would ask the customer regarding their needs first.
 
 ---
 #### 3) API Mapping Problem
 
-**Finding**
+**Finding:**
 
 The map specifies to map 'Major Donor 2021' and 'Top Donor' to 'Major Donor', but does not specify tag "Major Donor 2022" in the mapping. This leads to a new separate tag 'Major Donor 2022' in my final tag counts output. I might assume this API is an outdated version and will ask the clients their requirement to keep the 'Major Donor 2022' tag or merge.
+
 ---
 
 #### Recommended Verification Checks
