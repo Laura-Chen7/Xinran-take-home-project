@@ -113,6 +113,7 @@ During QA I found a few input inconsistencies that required explicit handling de
 
 #### 1) Orphan Patron IDs appearing only in `donations.csv` (e.g., Patron ID = 1234)
 **Finding**
+
 Some Patron IDs exist in `donations.csv` but do not appear in `constituents.csv` or `emails.csv`.
 
 **Risk**
@@ -144,7 +145,9 @@ Each `CB Constituent ID` appears once in the output. When duplicates exist, olde
 
 ---
 #### 3) API Mapping Problem
+
 **Finding**
+
 The map specifies to map 'Major Donor 2021' and 'Top Donor' to 'Major Donor', but does not specify tag "Major Donor 2022" in the mapping. This leads to a new separate tag 'Major Donor 2022' in my final tag counts output. I might assume this API is an outdated version and will ask the clients their requirement to keep the 'Major Donor 2022' tag or merge.
 ---
 
